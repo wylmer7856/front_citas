@@ -1,27 +1,44 @@
 // src/api/usuariosService.js
-import api from "./api";
+import axios from './api';
 
-export const getUsuarios = async () => {
-  const res = await api.get("/usuarios");
-  return res.data;
+// 🔐 Token helper
+const authHeader = (token) => ({
+  headers: { Authorization: `Bearer ${token}` }
+});
+
+// 📋 Listar todos los usuarios (solo admin)
+export const listarUsuarios = async (token) => {
+  return axios.get('/listarusuarios', authHeader(token));
 };
 
-export const getUsuario = async (id) => {
-  const res = await api.get(`/usuarios/${id}`);
-  return res.data;
+// ➕ Crear usuario (solo admin)
+export const crearUsuario = async (data, token) => {
+  return axios.post('/Crearusuarios', {
+    nombre: data.nombre,
+    apellido: data.apellido,
+    email: data.email,
+    password: data.password,
+    tipo_usuario: data.tipo_usuario, // 'ADMIN', 'MEDICO', 'PACIENTE'
+  }, authHeader(token));
 };
 
-export const createUsuario = async (data) => {
-  const res = await api.post("/usuarios", data);
-  return res.data;
+// 🔍 Buscar usuario por ID
+export const buscarUsuario = async (id, token) => {
+  return axios.get(`/buscrausuarios/${id}`, authHeader(token));
 };
 
-export const updateUsuario = async (id, data) => {
-  const res = await api.put(`/usuarios/${id}`, data);
-  return res.data;
+// ✏️ Editar usuario
+export const editarUsuario = async (id, data, token) => {
+  return axios.put(`/editarusuarios/${id}`, {
+    nombre: data.nombre,
+    apellido: data.apellido,
+    email: data.email,
+    tipo_usuario: data.tipo_usuario,
+    password: data.password, // opcional
+  }, authHeader(token));
 };
 
-export const deleteUsuario = async (id) => {
-  const res = await api.delete(`/usuarios/${id}`);
-  return res.data;
+// ❌ Eliminar usuario
+export const eliminarUsuario = async (id, token) => {
+  return axios.delete(`/eliminarusuarios/${id}`, authHeader(token));
 };

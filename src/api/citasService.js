@@ -1,35 +1,43 @@
 // src/api/citasService.js
-import api from "./api";
+import axios from './api';
 
-const getCitas = async () => {
-  const res = await api.get("/citas");
-  return res.data;
+const authHeader = (token) => ({
+  headers: { Authorization: `Bearer ${token}` }
+});
+
+// 📋 Listar citas (admin ve todas, médico y paciente ven las suyas)
+export const listarCitas = async (token) => {
+  return axios.get('/listarcitas', authHeader(token));
 };
 
-const getCita = async (id) => {
-  const res = await api.get(`/citas/${id}`);
-  return res.data;
+// 🔍 Ver cita por ID
+export const buscarCita = async (id, token) => {
+  return axios.get(`/buscarcitas/${id}`, authHeader(token));
 };
 
-const createCita = async (data) => {
-  const res = await api.post("/citas", data);
-  return res.data;
+// ➕ Crear cita (médico o paciente)
+export const crearCita = async (data, token) => {
+  return axios.post('/crearcitas', {
+    id_paciente: data.id_paciente,
+    id_medico_especialidad: data.id_medico_especialidad,
+    fecha: data.fecha,
+    hora: data.hora,
+    estado: data.estado, // 'PENDIENTE', 'CONFIRMADA', etc.
+  }, authHeader(token));
 };
 
-const updateCita = async (id, data) => {
-  const res = await api.put(`/citas/${id}`, data);
-  return res.data;
+// ✏️ Editar cita (médico o paciente)
+export const editarCita = async (id, data, token) => {
+  return axios.put(`/editarcitas/${id}`, {
+    id_paciente: data.id_paciente,
+    id_medico_especialidad: data.id_medico_especialidad,
+    fecha: data.fecha,
+    hora: data.hora,
+    estado: data.estado,
+  }, authHeader(token));
 };
 
-const deleteCita = async (id) => {
-  const res = await api.delete(`/citas/${id}`);
-  return res.data;
-};
-
-export default {
-  getCitas,
-  getCita,
-  createCita,
-  updateCita,
-  deleteCita,
+// ❌ Eliminar cita (médico o paciente)
+export const eliminarCita = async (id, token) => {
+  return axios.delete(`/eliminarcitas/${id}`, authHeader(token));
 };

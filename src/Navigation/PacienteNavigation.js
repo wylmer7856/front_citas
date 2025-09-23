@@ -1,38 +1,65 @@
-import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+// src/Navigation/PacienteNavigation.js
+import React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-// Pantalla principal del paciente
-import PacienteScreen from "../screens/Inicio/PacienteScreen";
+import PacienteScreen from '../screens/Dashboard/PacienteScreen';
+import HistorialStack from './stacks/HistorialStack';
+import CitasStack from './stacks/CitasStack';
 
-// Screens de Citas
-import ListarCitas from "../screens/Citas/ListarCitas";
-import DetalleCita from "../screens/Citas/DetalleCita";
-import CrearEditarCita from "../screens/Citas/CrearEditarCita";
+const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
-// Screens de Historial (solo visualización)
-import ListarHistorial from "../screens/Historial/ListarHistorial";
-import DetalleHistorial from "../screens/Historial/DetalleHistorial";
-
-const Stack = createNativeStackNavigator();
-
-export default function PacienteNavigation() {
+function PacienteTabs() {
   return (
-    <Stack.Navigator initialRouteName="PacienteScreen">
-      {/* Dashboard del paciente */}
-      <Stack.Screen
-        name="PacienteScreen"
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color, size }) => {
+          let iconName;
+          switch (route.name) {
+            case 'Dashboard':
+              iconName = 'dashboard';
+              break;
+            case 'MisCitas':
+              iconName = 'event';
+              break;
+            case 'MiHistorial':
+              iconName = 'history';
+              break;
+            default:
+              iconName = 'circle';
+          }
+          return <MaterialIcons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: '#9C27B0',
+        tabBarInactiveTintColor: 'gray',
+        headerShown: false,
+      })}
+    >
+      <Tab.Screen 
+        name="Dashboard" 
         component={PacienteScreen}
-        options={{ headerShown: false }}
+        options={{ title: 'Inicio' }}
       />
+      <Tab.Screen 
+        name="MisCitas" 
+        component={CitasStack}
+        options={{ title: 'Mis Citas' }}
+      />
+      <Tab.Screen 
+        name="MiHistorial" 
+        component={HistorialStack}
+        options={{ title: 'Mi Historial' }}
+      />
+    </Tab.Navigator>
+  );
+}
 
-      {/* Citas */}
-      <Stack.Screen name="ListarCitas" component={ListarCitas} />
-      <Stack.Screen name="DetalleCita" component={DetalleCita} />
-      <Stack.Screen name="CrearEditarCita" component={CrearEditarCita} />
-
-      {/* Historial */}
-      <Stack.Screen name="ListarHistorial" component={ListarHistorial} />
-      <Stack.Screen name="DetalleHistorial" component={DetalleHistorial} />
+export default function PacienteNavigation({ onLogout }) {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="PacienteTabs" component={PacienteTabs} />
     </Stack.Navigator>
   );
 }

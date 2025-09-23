@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { getHistorial } from "../../api/historialService";
+// src/screens/Historial/DetalleHistorial.js
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { buscarHistorial } from '../../api/historialService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function DetalleHistorial({ route }) {
   const { id } = route.params;
@@ -8,30 +10,26 @@ export default function DetalleHistorial({ route }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const data = await getHistorial(id);
-        setHistorial(data);
-      } catch (error) {
-        console.error(error);
-      }
+      const token = await AsyncStorage.getItem('token');
+      const res = await buscarHistorial(id, token);
+      setHistorial(res.data);
     };
     fetchData();
-  }, [id]);
+  }, []);
 
-  if (!historial) return <Text style={styles.loading}>Cargando...</Text>;
+  if (!historial) return <Text>Cargando...</Text>;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Historial de {historial.paciente}</Text>
-      <Text>Fecha: {historial.fecha}</Text>
+      <Text style={styles.title}>Detalle del Historial</Text>
+      <Text>ID Cita: {historial.id_cita}</Text>
       <Text>Diagnóstico: {historial.diagnostico}</Text>
-      <Text>Tratamiento: {historial.tratamiento}</Text>
+      <Text>Receta: {historial.receta}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "#fff" },
-  title: { fontSize: 20, fontWeight: "bold", marginBottom: 10, color: "#1089D3" },
-  loading: { flex: 1, textAlign: "center", marginTop: 50, fontSize: 18 },
+  container: { flex: 1, padding: 20 },
+  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 10 },
 });

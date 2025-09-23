@@ -1,35 +1,31 @@
 // src/api/especialidadesService.js
-import api from "./api";
+import axios from './api';
 
-const getEspecialidades = async () => {
-  const res = await api.get("/especialidades");
-  return res.data;
+const authHeader = (token) => ({
+  headers: { Authorization: `Bearer ${token}` }
+});
+
+// 📋 Listar todas las especialidades (admin y médico)
+export const listarEspecialidades = async (token) => {
+  return axios.get('/listarespecialidades', authHeader(token));
 };
 
-const getEspecialidad = async (id) => {
-  const res = await api.get(`/especialidades/${id}`);
-  return res.data;
+// 🔍 Ver una especialidad por ID
+export const buscarEspecialidad = async (id, token) => {
+  return axios.get(`/buscareespecialidades/${id}`, authHeader(token));
 };
 
-const createEspecialidad = async (data) => {
-  const res = await api.post("/especialidades", data);
-  return res.data;
+// ➕ Crear una especialidad (solo admin)
+export const crearEspecialidad = async (nombre, token) => {
+  return axios.post('/crearespecialidades', { nombre }, authHeader(token));
 };
 
-const updateEspecialidad = async (id, data) => {
-  const res = await api.put(`/especialidades/${id}`, data);
-  return res.data;
+// ✏️ Editar una especialidad (solo admin)
+export const editarEspecialidad = async (id, nombre, token) => {
+  return axios.put(`/editarespecialidades/${id}`, { nombre }, authHeader(token));
 };
 
-const deleteEspecialidad = async (id) => {
-  const res = await api.delete(`/especialidades/${id}`);
-  return res.data;
-};
-
-export default {
-  getEspecialidades,
-  getEspecialidad,
-  createEspecialidad,
-  updateEspecialidad,
-  deleteEspecialidad,
+// ❌ Eliminar una especialidad (solo admin)
+export const eliminarEspecialidad = async (id, token) => {
+  return axios.delete(`/eliminarespecialidades/${id}`, authHeader(token));
 };

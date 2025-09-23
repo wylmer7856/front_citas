@@ -1,33 +1,32 @@
-// src/screens/Historial/ListarHistorial.js
+// src/screens/MedicoEspecialidad/ListarAsignaciones.js
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
-import { listarHistoriales } from '../../api/historialService';
+import { listarAsignaciones } from '../../api/medicoEspecialidadService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Card from '../../components/Card';
 
-export default function ListarHistorial() {
-  const [historiales, setHistoriales] = useState([]);
+export default function ListarAsignaciones() {
+  const [asignaciones, setAsignaciones] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       const token = await AsyncStorage.getItem('token');
-      const res = await listarHistoriales(token);
-      setHistoriales(res.data);
+      const res = await listarAsignaciones(token);
+      setAsignaciones(res.data);
     };
     fetchData();
   }, []);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Historial Médico</Text>
+      <Text style={styles.title}>Asignaciones Médico-Especialidad</Text>
       <FlatList
-        data={historiales}
+        data={asignaciones}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <Card title={`Historial #${item.id}`}>
-            <Text>ID Cita: {item.id_cita}</Text>
-            <Text>Diagnóstico: {item.diagnostico}</Text>
-            <Text>Receta: {item.receta}</Text>
+          <Card title={`Asignación #${item.id}`}>
+            <Text>ID Médico: {item.id_medico}</Text>
+            <Text>ID Especialidad: {item.id_especialidad}</Text>
           </Card>
         )}
       />

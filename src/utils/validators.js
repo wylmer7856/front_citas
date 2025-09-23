@@ -1,15 +1,13 @@
-// Validar email
-export const validateEmail = (email) => {
-  const re = /\S+@\S+\.\S+/;
-  return re.test(email);
+// src/utils/validators.js
+export const isEmailValid = (email) => {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
 };
 
-// Validar password (mínimo 6 caracteres)
-export const validatePassword = (password) => {
-  return password && password.length >= 6;
+export const isPasswordStrong = (password) => {
+  return password.length >= 6;
 };
 
-// Validar campos vacíos
-export const isEmpty = (value) => {
-  return !value || value.trim().length === 0;
+export const isRequired = (value) => {
+  return value !== null && value !== undefined && value.trim() !== '';
 };

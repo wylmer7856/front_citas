@@ -1,324 +1,178 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native"
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Dimensions,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-export default function InicioScreen({ navigation }) {
+const { width } = Dimensions.get('window');
+
+const images = [
+  {
+    uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeuzm5pAyJBeaqGUvXEG7DgLZIc_i1jY_dTS7t_OuC44_Dt4B6gACxRkYCLBdie8n7oqA&usqp=CAU',
+    caption: 'Atención médica personalizada',
+  },
+  {
+    uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8E6H8K3YXEyoeLxiDDQYb40xbDwCJWcCCrA&s',
+    caption: 'Especialistas certificados',
+  },
+  {
+    uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDEFaA2J1cqW0Jn-R8bNIsjtyq_nWlCTqKEw&s',
+    caption: 'Gestión de citas eficiente',
+  },
+];
+
+export default function InicioScreen() {
+  const navigation = useNavigation();
+
+  const renderItem = ({ item }) => (
+    <View style={styles.slide}>
+      <Image source={{ uri: item.uri }} style={styles.image} />
+      <Text style={styles.caption}>{item.caption}</Text>
+    </View>
+  );
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* Header Section */}
-      <View style={styles.headerSection}>
-        <Text style={styles.mainTitle}>EPS SaludTotal+</Text>
-        <Text style={styles.tagline}>Excelencia en Atención Médica</Text>
-        <Text style={styles.subtitle}>
-          Transformamos la experiencia de salud con tecnología de vanguardia y atención personalizada para cada
-          paciente.
-        </Text>
-      </View>
+    <View style={styles.container}>
+      <Text style={styles.title}>Bienvenido a CITASFT</Text>
+      <Text style={styles.subtitle}>Tu sistema de gestión de citas médicas</Text>
 
-      {/* Action Buttons */}
-      <View style={styles.actionContainer}>
-        <TouchableOpacity
-          style={[styles.button, styles.primaryButton]}
-          onPress={() => navigation.navigate("Auth", { screen: "Login" })}
-        >
-          <Text style={styles.primaryButtonText}>Acceder a mi Portal</Text>
-        </TouchableOpacity>
+      <FlatList
+        data={images}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => index.toString()}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        style={styles.carousel}
+      />
 
-        <TouchableOpacity
-          style={[styles.button, styles.secondaryButton]}
-          onPress={() => navigation.navigate("Auth", { screen: "Register" })}
-        >
-          <Text style={styles.secondaryButtonText}>Crear Nueva Cuenta</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Login')}
+        style={styles.loginButton}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.buttonText}>Iniciar Sesión</Text>
+      </TouchableOpacity>
 
-      {/* Stats Section */}
-      <View style={styles.statsContainer}>
-        <View style={styles.statItem}>
-          <Text style={styles.statNumber}>10+</Text>
-          <Text style={styles.statLabel}>Pacientes Activos</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Text style={styles.statNumber}>1+</Text>
-          <Text style={styles.statLabel}>Especialistas</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Text style={styles.statNumber}>24/7</Text>
-          <Text style={styles.statLabel}>Atención</Text>
-        </View>
-      </View>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Register')}
+        style={styles.registerButton}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.buttonText}>Registrarse</Text>
+      </TouchableOpacity>
 
-      {/* About Section */}
-      <View style={styles.sectionCard}>
-        <Text style={styles.sectionTitle}>Nuestra Misión</Text>
-        <Text style={styles.sectionText}>
-          En EPS SaludTotal+ nos comprometemos a brindar servicios de salud integrales y de alta calidad, utilizando
-          tecnología innovadora para garantizar una experiencia excepcional en cada interacción con nuestros pacientes y
-          sus familias.
-        </Text>
-      </View>
-
-      {/* Services Section */}
-      <View style={styles.sectionCard}>
-        <Text style={styles.sectionTitle}>Servicios Especializados</Text>
-        <View style={styles.servicesList}>
-          <View style={styles.serviceItem}>
-            <Text style={styles.serviceIcon}>🏥</Text>
-            <View style={styles.serviceContent}>
-              <Text style={styles.serviceTitle}>Consulta Médica General</Text>
-              <Text style={styles.serviceDescription}>Atención primaria con médicos certificados</Text>
-            </View>
-          </View>
-
-          <View style={styles.serviceItem}>
-            <Text style={styles.serviceIcon}>👨‍⚕️</Text>
-            <View style={styles.serviceContent}>
-              <Text style={styles.serviceTitle}>Especialidades Médicas</Text>
-              <Text style={styles.serviceDescription}>Más de 30 especialidades disponibles</Text>
-            </View>
-          </View>
-
-          <View style={styles.serviceItem}>
-            <Text style={styles.serviceIcon}>📱</Text>
-            <View style={styles.serviceContent}>
-              <Text style={styles.serviceTitle}>Telemedicina</Text>
-              <Text style={styles.serviceDescription}>Consultas virtuales desde casa</Text>
-            </View>
-          </View>
-
-          <View style={styles.serviceItem}>
-            <Text style={styles.serviceIcon}>📋</Text>
-            <View style={styles.serviceContent}>
-              <Text style={styles.serviceTitle}>Historial Clínico Digital</Text>
-              <Text style={styles.serviceDescription}>Acceso completo a tu información médica</Text>
-            </View>
-          </View>
-        </View>
-      </View>
-
-      {/* Benefits Section */}
-      <View style={styles.sectionCard}>
-        <Text style={styles.sectionTitle}>¿Por qué elegir SaludTotal+?</Text>
-        <View style={styles.benefitsList}>
-          <Text style={styles.benefitItem}>✨ Red médica de excelencia con profesionales certificados</Text>
-          <Text style={styles.benefitItem}>⚡ Citas médicas programadas en menos de 24 horas</Text>
-          <Text style={styles.benefitItem}>🔒 Seguridad y privacidad garantizada de tus datos</Text>
-          <Text style={styles.benefitItem}>💊 Cobertura integral en medicamentos y tratamientos</Text>
-          <Text style={styles.benefitItem}>🌟 Atención personalizada y seguimiento continuo</Text>
-        </View>
-      </View>
-
-      {/* Contact Info */}
-      <View style={styles.contactCard}>
-        <Text style={styles.contactTitle}>¿Necesitas Ayuda?</Text>
-        <Text style={styles.contactText}>
-          Nuestro equipo de atención al cliente está disponible las 24 horas para resolver tus dudas.
-        </Text>
-        <Text style={styles.contactPhone}>📞 Línea de Atención: 01-8000-SALUD</Text>
-      </View>
-    </ScrollView>
-  )
+      <Text style={styles.footer}>Versión 1.0 • Desarrollado por Wilmer</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    backgroundColor: "#FAFBFC",
+    flex: 1,
+    backgroundColor: '#f0f4f8', // Softer background for a modern look
+    alignItems: 'center',
+    justifyContent: 'space-between', // Better spacing distribution
+    padding: 20,
+    paddingTop: 40, // Added top padding for status bar
   },
-
-  // Header Section
-  headerSection: {
-    backgroundColor: "linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%)",
-    paddingHorizontal: 24,
-    paddingVertical: 40,
-    alignItems: "center",
-    marginBottom: 32,
-  },
-  mainTitle: {
-    fontSize: 32,
-    fontWeight: "800",
-    color: "#0226deff",
-    textAlign: "center",
+  title: {
+    fontSize: 28, // Slightly larger for emphasis
+    fontWeight: '700', // Bolder for modern typography
+    color: '#1a2a44', // Deeper color for contrast
     marginBottom: 8,
-    letterSpacing: -0.5,
-  },
-  tagline: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#3c508fff",
-    textAlign: "center",
-    marginBottom: 16,
-    letterSpacing: 0.5,
+    textAlign: 'center',
+    letterSpacing: 0.5, // Subtle letter spacing for elegance
+    textShadowColor: 'rgba(0, 0, 0, 0.1)', // Subtle shadow for depth
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   subtitle: {
     fontSize: 16,
-    color: "#000000ff",
-    textAlign: "center",
-    lineHeight: 24,
-    paddingHorizontal: 16,
+    color: '#4a5a77', // Softer, complementary color
+    textAlign: 'center',
+    marginBottom: 25,
+    fontStyle: 'italic', // Italic for a friendly tone
+    lineHeight: 22, // Improved readability
   },
-
-  // Action Buttons
-  actionContainer: {
-    paddingHorizontal: 24,
-    marginBottom: 32,
-    gap: 16,
+  carousel: {
+    marginBottom: 30, // Increased spacing for balance
+    borderRadius: 12, // Rounded edges for carousel
+    overflow: 'hidden', // Ensure content stays within bounds
   },
-  button: {
-    borderRadius: 12,
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  primaryButton: {
-    backgroundColor: "#1E40AF",
-  },
-  secondaryButton: {
-    backgroundColor: "#FFFFFF",
-    borderWidth: 2,
-    borderColor: "#1E40AF",
-  },
-  primaryButtonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "700",
-    letterSpacing: 0.5,
-  },
-  secondaryButtonText: {
-    color: "#1E40AF",
-    fontSize: 16,
-    fontWeight: "600",
-    letterSpacing: 0.5,
-  },
-
-  // Stats Section
-  statsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    paddingHorizontal: 24,
-    paddingVertical: 24,
-    backgroundColor: "#FFFFFF",
-    marginHorizontal: 24,
-    marginBottom: 32,
-    borderRadius: 16,
-    shadowColor: "#000",
+  slide: {
+    width: width * 0.85, // Slightly wider for prominence
+    marginHorizontal: 8,
+    backgroundColor: '#ffffff',
+    borderRadius: 12, // Softer corners
+    padding: 12,
+    alignItems: 'center',
+    elevation: 5, // Increased shadow for depth
+    shadowColor: '#000', // Shadow for iOS
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    transform: [{ scale: 1 }], // Ready for potential animations
   },
-  statItem: {
-    alignItems: "center",
+  image: {
+    width: '100%',
+    height: 200, // Slightly taller for better visuals
+    borderRadius: 10,
+    marginBottom: 8, // Space between image and caption
   },
-  statNumber: {
-    fontSize: 28,
-    fontWeight: "800",
-    color: "#1E40AF",
-    marginBottom: 4,
+  caption: {
+    fontSize: 15, // Slightly larger for readability
+    color: '#1a2a44', // Consistent with title color
+    textAlign: 'center',
+    fontWeight: '500', // Medium weight for balance
+    paddingHorizontal: 10,
+    lineHeight: 20, // Improved readability
   },
-  statLabel: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#64748B",
-    textAlign: "center",
-  },
-
-  // Section Cards
-  sectionCard: {
-    backgroundColor: "#FFFFFF",
-    marginHorizontal: 24,
-    marginBottom: 24,
-    padding: 24,
-    borderRadius: 16,
-    shadowColor: "#000",
+  loginButton: {
+    backgroundColor: '#1e90ff', // Brighter, modern blue
+    paddingVertical: 14, // Taller button for better touch
+    paddingHorizontal: 30,
+    borderRadius: 10, // Softer corners
+    alignItems: 'center',
+    width: '85%', // Slightly wider
+    marginTop: 20,
+    elevation: 3, // Subtle shadow
+    shadowColor: '#000', // Shadow for iOS
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 12,
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  registerButton: {
+    backgroundColor: '#2ecc71', // Vibrant green for contrast
+    paddingVertical: 14,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    alignItems: 'center',
+    width: '85%',
+    marginTop: 15,
     elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
-  sectionTitle: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#1E293B",
-    marginBottom: 16,
-    letterSpacing: -0.3,
+  buttonText: {
+    color: '#ffffff',
+    fontSize: 17, // Slightly larger for prominence
+    fontWeight: '600', // Bolder for emphasis
+    letterSpacing: 0.5, // Subtle spacing for readability
   },
-  sectionText: {
-    fontSize: 16,
-    color: "#475569",
-    lineHeight: 24,
-    textAlign: "justify",
+  footer: {
+    marginTop: 30,
+    fontSize: 13, // Slightly larger for clarity
+    color: '#6b7280', // Softer gray for modern look
+    fontStyle: 'italic', // Matches subtitle style
+    textAlign: 'center',
   },
-
-  // Services
-  servicesList: {
-    gap: 20,
-  },
-  serviceItem: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 16,
-  },
-  serviceIcon: {
-    fontSize: 24,
-    marginTop: 2,
-  },
-  serviceContent: {
-    flex: 1,
-  },
-  serviceTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#1E293B",
-    marginBottom: 4,
-  },
-  serviceDescription: {
-    fontSize: 14,
-    color: "#64748B",
-    lineHeight: 20,
-  },
-
-  // Benefits
-  benefitsList: {
-    gap: 12,
-  },
-  benefitItem: {
-    fontSize: 15,
-    color: "#374151",
-    lineHeight: 22,
-    paddingLeft: 8,
-  },
-
-  // Contact Card
-  contactCard: {
-    backgroundColor: "#F8FAFC",
-    marginHorizontal: 24,
-    marginBottom: 32,
-    padding: 24,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
-    alignItems: "center",
-  },
-  contactTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#1E293B",
-    marginBottom: 12,
-  },
-  contactText: {
-    fontSize: 14,
-    color: "#64748B",
-    textAlign: "center",
-    lineHeight: 20,
-    marginBottom: 16,
-  },
-  contactPhone: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#1E40AF",
-  },
-})
+});

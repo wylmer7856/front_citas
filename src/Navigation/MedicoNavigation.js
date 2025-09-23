@@ -1,40 +1,83 @@
-import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+// src/Navigation/MedicoNavigation.js
+import React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-// Pantalla principal del médico
-import MedicoScreen from "../screens/Inicio/MedicoScreen";
+import MedicoScreen from '../screens/Dashboard/MedicoScreen';
+import EspecialidadesStack from './stacks/EspecialidadesStack';
+import AsignacionesStack from './stacks/AsignacionesStack';
+import HistorialStack from './stacks/HistorialStack';
+import CitasStack from './stacks/CitasStack';
 
-// Screens de Citas
-import ListarCitas from "../screens/Citas/ListarCitas";
-import DetalleCita from "../screens/Citas/DetalleCita";
-import CrearEditarCita from "../screens/Citas/CrearEditarCita";
+const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
-// Screens de Historial
-import ListarHistorial from "../screens/Historial/ListarHistorial";
-import DetalleHistorial from "../screens/Historial/DetalleHistorial";
-import CrearEditarHistorial from "../screens/Historial/CrearEditarHistorial";
-
-const Stack = createNativeStackNavigator();
-
-export default function MedicoNavigation() {
+function MedicoTabs() {
   return (
-    <Stack.Navigator initialRouteName="MedicoScreen">
-      {/* Dashboard del médico */}
-      <Stack.Screen
-        name="MedicoScreen"
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color, size }) => {
+          let iconName;
+          switch (route.name) {
+            case 'Dashboard':
+              iconName = 'dashboard';
+              break;
+            case 'Citas':
+              iconName = 'event';
+              break;
+            case 'Historiales':
+              iconName = 'history';
+              break;
+            case 'Especialidades':
+              iconName = 'medical-services';
+              break;
+            case 'MisEspecialidades':
+              iconName = 'assignment';
+              break;
+            default:
+              iconName = 'circle';
+          }
+          return <MaterialIcons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: '#4CAF50',
+        tabBarInactiveTintColor: 'gray',
+        headerShown: false,
+      })}
+    >
+      <Tab.Screen 
+        name="Dashboard" 
         component={MedicoScreen}
-        options={{ headerShown: false }}
+        options={{ title: 'Inicio' }}
       />
+      <Tab.Screen 
+        name="Citas" 
+        component={CitasStack}
+        options={{ title: 'Citas' }}
+      />
+      <Tab.Screen 
+        name="Historiales" 
+        component={HistorialStack}
+        options={{ title: 'Historiales' }}
+      />
+      <Tab.Screen 
+        name="Especialidades" 
+        component={EspecialidadesStack}
+        options={{ title: 'Especialidades' }}
+      />
+      <Tab.Screen 
+        name="MisEspecialidades" 
+        component={AsignacionesStack}
+        options={{ title: 'Mis Especialidades' }}
+      />
+    </Tab.Navigator>
+  );
+}
 
-      {/* Citas */}
-      <Stack.Screen name="ListarCitas" component={ListarCitas} />
-      <Stack.Screen name="DetalleCita" component={DetalleCita} />
-      <Stack.Screen name="CrearEditarCita" component={CrearEditarCita} />
-
-      {/* Historial */}
-      <Stack.Screen name="ListarHistorial" component={ListarHistorial} />
-      <Stack.Screen name="DetalleHistorial" component={DetalleHistorial} />
-      <Stack.Screen name="CrearEditarHistorial" component={CrearEditarHistorial} />
+export default function MedicoNavigation({ onLogout }) {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="MedicoTabs" component={MedicoTabs} />
     </Stack.Navigator>
   );
 }

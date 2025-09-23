@@ -1,56 +1,24 @@
-import api from "./api";
+// src/api/medicoEspecialidadService.js
+import axios from './api';
 
-// Obtener todas las relaciones médico-especialidad
-export const getMedicosEspecialidades = async () => {
-  try {
-    const response = await api.get("/medico-especialidad");
-    return response.data;
-  } catch (error) {
-    console.error("Error al obtener médico-especialidad:", error);
-    throw error;
-  }
+const authHeader = (token) => ({
+  headers: { Authorization: `Bearer ${token}` }
+});
+
+// 📋 Listar relaciones médico-especialidad
+export const listarAsignaciones = async (token) => {
+  return axios.get('/listarmedico-especialidad', authHeader(token));
 };
 
-// Obtener una relación por ID
-export const getMedicoEspecialidadById = async (id) => {
-  try {
-    const response = await api.get(`/medico-especialidad/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error(`Error al obtener médico-especialidad con id ${id}:`, error);
-    throw error;
-  }
+// ➕ Asignar especialidad a un médico (solo admin)
+export const asignarEspecialidad = async (id_medico, id_especialidad, token) => {
+  return axios.post('/crearmedico-especialidad', {
+    id_medico,
+    id_especialidad
+  }, authHeader(token));
 };
 
-// Crear una nueva relación médico-especialidad
-export const createMedicoEspecialidad = async (data) => {
-  try {
-    const response = await api.post("/medico-especialidad", data);
-    return response.data;
-  } catch (error) {
-    console.error("Error al crear médico-especialidad:", error);
-    throw error;
-  }
-};
-
-// Actualizar relación existente
-export const updateMedicoEspecialidad = async (id, data) => {
-  try {
-    const response = await api.put(`/medico-especialidad/${id}`, data);
-    return response.data;
-  } catch (error) {
-    console.error(`Error al actualizar médico-especialidad con id ${id}:`, error);
-    throw error;
-  }
-};
-
-// Eliminar relación médico-especialidad
-export const deleteMedicoEspecialidad = async (id) => {
-  try {
-    const response = await api.delete(`/medico-especialidad/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error(`Error al eliminar médico-especialidad con id ${id}:`, error);
-    throw error;
-  }
+// ❌ Eliminar relación médico-especialidad (solo admin)
+export const eliminarAsignacion = async (id, token) => {
+  return axios.delete(`/eliminarmedico-especialidad/${id}`, authHeader(token));
 };

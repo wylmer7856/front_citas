@@ -1,55 +1,46 @@
-import React from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+// src/components/Tabla.js
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
-export default function Tabla({ data, headers }) {
-  const renderHeader = () => (
-    <View style={styles.row}>
-      {headers.map((header, index) => (
-        <Text key={index} style={[styles.cell, styles.header]}>
-          {header}
-        </Text>
-      ))}
-    </View>
-  );
-
-  const renderItem = ({ item }) => (
-    <View style={styles.row}>
-      {headers.map((key, index) => (
-        <Text key={index} style={styles.cell}>
-          {item[key]}
-        </Text>
-      ))}
-    </View>
-  );
-
+export default function Tabla({ headers, data }) {
   return (
-    <View style={styles.container}>
-      {renderHeader()}
-      <FlatList data={data} renderItem={renderItem} keyExtractor={(item, index) => index.toString()} />
+    <View style={styles.table}>
+      <View style={styles.row}>
+        {headers.map((header, index) => (
+          <Text key={index} style={[styles.cell, styles.header]}>
+            {header}
+          </Text>
+        ))}
+      </View>
+      {data.map((row, rowIndex) => (
+        <View key={rowIndex} style={styles.row}>
+          {row.map((cell, cellIndex) => (
+            <Text key={cellIndex} style={styles.cell}>
+              {cell}
+            </Text>
+          ))}
+        </View>
+      ))}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
+  table: {
     marginVertical: 10,
-    backgroundColor: "#fff",
   },
   row: {
-    flexDirection: "row",
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderColor: '#ddd',
   },
   cell: {
     flex: 1,
-    padding: 10,
-    borderRightWidth: 1,
-    borderRightColor: "#ccc",
-    textAlign: "center",
+    padding: 8,
+    fontSize: 14,
   },
   header: {
-    fontWeight: "bold",
-    backgroundColor: "#f2f2f2",
+    fontWeight: 'bold',
+    backgroundColor: '#f0f0f0',
   },
 });

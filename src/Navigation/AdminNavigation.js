@@ -1,79 +1,83 @@
-import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+// src/Navigation/AdminNavigation.js
+import React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-// Dashboard principal para el administrador
-import AdminScreen from "../screens/Inicio/AdminScreen";
+import AdminScreen from '../screens/Dashboard/AdminScreen';
+import UsuariosStack from './stacks/UsuariosStack';
+import EspecialidadesStack from './stacks/EspecialidadesStack';
+import AsignacionesStack from './stacks/AsignacionesStack';
+import HistorialStack from './stacks/HistorialStack';
 
-// Screens de Usuarios
-import ListarUsuarios from "../screens/Usuarios/ListarUsuarios";
-import CrearEditarUsuario from "../screens/Usuarios/CrearEditarUsuario";
-import DetalleUsuario from "../screens/Usuarios/DetalleUsuario";
+const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
-// Screens de Especialidades
-import ListarEspecialidades from "../screens/Especialidades/ListarEspecialidades";
-import CrearEditarEspecialidad from "../screens/Especialidades/CrearEditarEspecialidad";
-import DetalleEspecialidad from "../screens/Especialidades/DetalleEspecialidad";
-
-// Screens de Médico-Especialidad
-import ListarMedicoEspecialidad from "../screens/MedicoEspecialidad/ListarMedicoEspecialidad";
-import CrearEditarMedicoEspecialidad from "../screens/MedicoEspecialidad/CrearEditarMedicoEspecialidad";
-import DetalleMedicoEspecialidad from "../screens/MedicoEspecialidad/DetalleMedicoEspecialidad";
-
-// Screens de Citas
-import ListarCitas from "../screens/Citas/ListarCitas";
-import CrearEditarCita from "../screens/Citas/CrearEditarCita";
-import DetalleCita from "../screens/Citas/DetalleCita";
-
-// Screens de Historial
-import ListarHistorial from "../screens/Historial/ListarHistorial";
-import CrearEditarHistorial from "../screens/Historial/CrearEditarHistorial";
-import DetalleHistorial from "../screens/Historial/DetalleHistorial";
-
-const Stack = createNativeStackNavigator();
-
-export default function AdminNavigation() {
+function AdminTabs() {
   return (
-    <Stack.Navigator initialRouteName="AdminScreen">
-      {/* Dashboard principal */}
-      <Stack.Screen
-        name="AdminScreen"
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color, size }) => {
+          let iconName;
+          switch (route.name) {
+            case 'Dashboard':
+              iconName = 'dashboard';
+              break;
+            case 'Usuarios':
+              iconName = 'people';
+              break;
+            case 'Especialidades':
+              iconName = 'medical-services';
+              break;
+            case 'Asignaciones':
+              iconName = 'assignment';
+              break;
+            case 'Historiales':
+              iconName = 'history';
+              break;
+            default:
+              iconName = 'circle';
+          }
+          return <MaterialIcons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: '#2196F3',
+        tabBarInactiveTintColor: 'gray',
+        headerShown: false,
+      })}
+    >
+      <Tab.Screen 
+        name="Dashboard" 
         component={AdminScreen}
-        options={{ headerShown: false }}
+        options={{ title: 'Inicio' }}
       />
-
-      {/* Usuarios */}
-      <Stack.Screen name="ListarUsuarios" component={ListarUsuarios} />
-      <Stack.Screen name="CrearEditarUsuario" component={CrearEditarUsuario} />
-      <Stack.Screen name="DetalleUsuario" component={DetalleUsuario} />
-
-      {/* Especialidades */}
-      <Stack.Screen name="ListarEspecialidades" component={ListarEspecialidades} />
-      <Stack.Screen name="CrearEditarEspecialidad" component={CrearEditarEspecialidad} />
-      <Stack.Screen name="DetalleEspecialidad" component={DetalleEspecialidad} />
-
-      {/* Médico-Especialidad */}
-      <Stack.Screen
-        name="ListarMedicoEspecialidad"
-        component={ListarMedicoEspecialidad}
+      <Tab.Screen 
+        name="Usuarios" 
+        component={UsuariosStack}
+        options={{ title: 'Usuarios' }}
       />
-      <Stack.Screen
-        name="CrearEditarMedicoEspecialidad"
-        component={CrearEditarMedicoEspecialidad}
+      <Tab.Screen 
+        name="Especialidades" 
+        component={EspecialidadesStack}
+        options={{ title: 'Especialidades' }}
       />
-      <Stack.Screen
-        name="DetalleMedicoEspecialidad"
-        component={DetalleMedicoEspecialidad}
+      <Tab.Screen 
+        name="Asignaciones" 
+        component={AsignacionesStack}
+        options={{ title: 'Asignaciones' }}
       />
+      <Tab.Screen 
+        name="Historiales" 
+        component={HistorialStack}
+        options={{ title: 'Historiales' }}
+      />
+    </Tab.Navigator>
+  );
+}
 
-      {/* Citas */}
-      <Stack.Screen name="ListarCitas" component={ListarCitas} />
-      <Stack.Screen name="CrearEditarCita" component={CrearEditarCita} />
-      <Stack.Screen name="DetalleCita" component={DetalleCita} />
-
-      {/* Historial */}
-      <Stack.Screen name="ListarHistorial" component={ListarHistorial} />
-      <Stack.Screen name="CrearEditarHistorial" component={CrearEditarHistorial} />
-      <Stack.Screen name="DetalleHistorial" component={DetalleHistorial} />
+export default function AdminNavigation({ onLogout }) {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="AdminTabs" component={AdminTabs} />
     </Stack.Navigator>
   );
 }

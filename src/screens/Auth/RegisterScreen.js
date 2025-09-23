@@ -1,123 +1,129 @@
-import React, { useState } from "react";
+// src/screens/Auth/RegisterScreen.js
+import React, { useState } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert
-} from "react-native";
-import { Picker } from "@react-native-picker/picker";
-import { register } from "../../api/authService";
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import axios from 'axios';
+import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native';
 
-export default function RegisterScreen({ navigation }) {
-  const [nombre, setNombre] = useState("");
-  const [apellido, setApellido] = useState("");
-  const [email, setEmail] = useState("");
-  const [telefono, setTelefono] = useState("");
-  const [password, setPassword] = useState("");
-  const [rol, setRol] = useState("PACIENTE");
-  const [loading, setLoading] = useState(false);
+export default function RegisterScreen() {
+  const navigation = useNavigation();
 
-  const validateFields = () => {
-    if (!nombre || !apellido || !email || !telefono || !password || !rol) {
-      Alert.alert("Error", "Todos los campos son obligatorios");
-      return false;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      Alert.alert("Error", "Correo electrónico inválido");
-      return false;
-    }
-
-    const phoneRegex = /^\d{7,15}$/;
-    if (!phoneRegex.test(telefono)) {
-      Alert.alert("Error", "El teléfono debe tener entre 7 y 15 dígitos");
-      return false;
-    }
-
-    if (password.length < 6) {
-      Alert.alert("Error", "La contraseña debe tener al menos 6 caracteres");
-      return false;
-    }
-
-    return true;
-  };
+  const [formData, setFormData] = useState({
+    nombre: '',
+    apellido: '',
+    email: '',
+    telefono: '',
+    password: '',
+    rol: 'PACIENTE', // valor por defecto
+  });
 
   const handleRegister = async () => {
-    if (!validateFields()) return;
-
     try {
-      setLoading(true);
-      await register({ nombre, apellido, email, telefono, password, rol });
-
-      Alert.alert("✅ Éxito", "Usuario registrado correctamente");
-      navigation.replace("Login");
+      const response = await axios.post('http://172.20.10.5:8000/api/register', formData);
+      Alert.alert('Éxito', 'Usuario registrado exitosamente');
+      navigation.navigate('Login');
     } catch (error) {
-      Alert.alert("❌ Error", error.response?.data?.message || "No se pudo registrar");
-    } finally {
-      setLoading(false);
+      Alert.alert('Error', 'No se pudo registrar');
     }
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.heading}>Crear Cuenta</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Registro de Usuario</Text>
 
-      <TextInput style={styles.input} placeholder="Nombre" value={nombre} onChangeText={setNombre} />
-      <TextInput style={styles.input} placeholder="Apellido" value={apellido} onChangeText={setApellido} />
-      <TextInput style={styles.input} placeholder="Correo electrónico" keyboardType="email-address" value={email} onChangeText={setEmail} />
-      <TextInput style={styles.input} placeholder="Teléfono" keyboardType="phone-pad" value={telefono} onChangeText={setTelefono} />
-      <TextInput style={styles.input} placeholder="Contraseña" secureTextEntry value={password} onChangeText={setPassword} />
+      <TextInput
+        placeholder="Nombre"
+        style={styles.input}
+        value={formData.nombre}
+        onChangeText={(text) => setFormData({ ...formData, nombre: text })}
+      />
+      <TextInput
+        placeholder="Apellido"
+        style={styles.input}
+        value={formData.apellido}
+        onChangeText={(text) => setFormData({ ...formData, apellido: text })}
+      />
+      <TextInput
+        placeholder="Correo electrónico"
+        style={styles.input}
+        keyboardType="email-address"
+        value={formData.email}
+        onChangeText={(text) => setFormData({ ...formData, email: text })}
+      />
+      <TextInput
+        placeholder="Teléfono"
+        style={styles.input}
+        keyboardType="phone-pad"
+        value={formData.telefono}
+        onChangeText={(text) => setFormData({ ...formData, telefono: text })}
+      />
+      <TextInput
+        placeholder="Contraseña"
+        style={styles.input}
+        secureTextEntry
+        value={formData.password}
+        onChangeText={(text) => setFormData({ ...formData, password: text })}
+      />
 
-      <Text style={styles.label}>Rol</Text>
-      <View style={styles.pickerContainer}>
-        <Picker
-          selectedValue={rol}
-          onValueChange={(itemValue) => setRol(itemValue)}
-          style={styles.picker}
-        >
-          <Picker.Item label="Paciente" value="PACIENTE" />
-          <Picker.Item label="Médico" value="MEDICO" />
-          <Picker.Item label="Administrador" value="ADMIN" />
-        </Picker>
-      </View>
+      <Picker
+        selectedValue={formData.rol}
+        onValueChange={(value) => setFormData({ ...formData, rol: value })}
+        style={styles.picker}
+      >
+        <Picker.Item label="Paciente" value="PACIENTE" />
+        <Picker.Item label="Administrador" value="ADMIN" />
+      </Picker>
 
-      <TouchableOpacity style={styles.registerButton} onPress={handleRegister} disabled={loading}>
-        <Text style={styles.registerButtonText}>{loading ? "Cargando..." : "Registrar"}</Text>
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <Text style={styles.buttonText}>Registrarse</Text>
       </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-        <Text style={styles.loginLink}>
-          ¿Ya tienes cuenta? <Text style={{ color: "#0099ff" }}>Inicia sesión</Text>
-        </Text>
-      </TouchableOpacity>
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, justifyContent: "center", padding: 25, backgroundColor: "#F8F9FD" },
-  heading: { textAlign: "center", fontWeight: "900", fontSize: 28, color: "#1089D3", marginBottom: 20 },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#f4f6f8',
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 24,
+    marginBottom: 20,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: '#2c3e50',
+  },
   input: {
-    width: "100%", backgroundColor: "#fff", padding: 15, borderRadius: 20, marginTop: 15,
-    borderWidth: 1, borderColor: "#ccc"
-  },
-  label: {
-    marginTop: 15,
-    fontWeight: "bold",
-    color: "#333",
-    fontSize: 14,
-  },
-  pickerContainer: {
-    backgroundColor: "#fff",
-    borderRadius: 20,
+    backgroundColor: '#fff',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 10,
+    borderColor: '#ccc',
     borderWidth: 1,
-    borderColor: "#ccc",
-    marginTop: 5,
-    marginBottom: 15,
   },
   picker: {
-    height: 50,
-    width: "100%",
+    backgroundColor: '#fff',
+    marginBottom: 15,
+    borderRadius: 8,
   },
-  registerButton: { backgroundColor: "#1089D3", padding: 15, borderRadius: 20, marginTop: 20, alignItems: "center" },
-  registerButtonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
-  loginLink: { textAlign: "center", fontSize: 12, marginTop: 15, color: "#444" },
+  button: {
+    backgroundColor: '#27ae60',
+    padding: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
 });
