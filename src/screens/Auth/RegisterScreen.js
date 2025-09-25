@@ -1,129 +1,85 @@
-// src/screens/Auth/RegisterScreen.js
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
-import axios from 'axios';
-import { Picker } from '@react-native-picker/picker';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState } from "react";
+import { View, TextInput, Button, Alert } from "react-native";
 
-export default function RegisterScreen() {
-  const navigation = useNavigation();
+export default function RegisterScreen({ navigation }) {
+  const [nombre, setNombre] = useState("");
+  const [apellido, setApellido] = useState("");
+  const [email, setEmail] = useState("");
+  const [telefono, setTelefono] = useState("");
+  const [password, setPassword] = useState("");
+  const [rol, setRol] = useState("PACIENTE"); // por defecto PACIENTE
 
-  const [formData, setFormData] = useState({
-    nombre: '',
-    apellido: '',
-    email: '',
-    telefono: '',
-    password: '',
-    rol: 'PACIENTE', // valor por defecto
-  });
+  const handleSubmit = async () => {
+    if (!nombre || !apellido || !email || !password) {
+      Alert.alert("Error", "Todos los campos requeridos deben ser llenados.");
+      return;
+    }
 
-  const handleRegister = async () => {
     try {
-      const response = await axios.post('http://172.20.10.5:8000/api/register', formData);
-      Alert.alert('Éxito', 'Usuario registrado exitosamente');
-      navigation.navigate('Login');
+      const response = await fetch("http://127.0.0.1:8000/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nombre,
+          apellido,
+          email,
+          telefono,
+          password,
+          rol,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert("Éxito", data.message);
+        navigation.navigate("LoginScreen");
+      } else {
+        Alert.alert("Error", data.message || "Error al registrar usuario");
+      }
     } catch (error) {
-      Alert.alert('Error', 'No se pudo registrar');
+      console.error("Error al registrar:", error);
+      Alert.alert("Error", "No se pudo conectar con el servidor");
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Registro de Usuario</Text>
-
+    <View style={{ padding: 20 }}>
       <TextInput
         placeholder="Nombre"
-        style={styles.input}
-        value={formData.nombre}
-        onChangeText={(text) => setFormData({ ...formData, nombre: text })}
+        value={nombre}
+        onChangeText={setNombre}
+        style={{ marginBottom: 10, borderWidth: 1, padding: 8 }}
       />
       <TextInput
         placeholder="Apellido"
-        style={styles.input}
-        value={formData.apellido}
-        onChangeText={(text) => setFormData({ ...formData, apellido: text })}
+        value={apellido}
+        onChangeText={setApellido}
+        style={{ marginBottom: 10, borderWidth: 1, padding: 8 }}
       />
       <TextInput
-        placeholder="Correo electrónico"
-        style={styles.input}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
         keyboardType="email-address"
-        value={formData.email}
-        onChangeText={(text) => setFormData({ ...formData, email: text })}
+        style={{ marginBottom: 10, borderWidth: 1, padding: 8 }}
       />
       <TextInput
-        placeholder="Teléfono"
-        style={styles.input}
-        keyboardType="phone-pad"
-        value={formData.telefono}
-        onChangeText={(text) => setFormData({ ...formData, telefono: text })}
+        placeholder="Teléfono (opcional)"
+        value={telefono}
+        onChangeText={setTelefono}
+        style={{ marginBottom: 10, borderWidth: 1, padding: 8 }}
       />
       <TextInput
         placeholder="Contraseña"
-        style={styles.input}
+        value={password}
+        onChangeText={setPassword}
         secureTextEntry
-        value={formData.password}
-        onChangeText={(text) => setFormData({ ...formData, password: text })}
+        style={{ marginBottom: 10, borderWidth: 1, padding: 8 }}
       />
-
-      <Picker
-        selectedValue={formData.rol}
-        onValueChange={(value) => setFormData({ ...formData, rol: value })}
-        style={styles.picker}
-      >
-        <Picker.Item label="Paciente" value="PACIENTE" />
-        <Picker.Item label="Administrador" value="ADMIN" />
-      </Picker>
-
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Registrarse</Text>
-      </TouchableOpacity>
+      <Button title="Registrarse" onPress={handleSubmit} />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#f4f6f8',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
-    textAlign: 'center',
-    fontWeight: 'bold',
-    color: '#2c3e50',
-  },
-  input: {
-    backgroundColor: '#fff',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 10,
-    borderColor: '#ccc',
-    borderWidth: 1,
-  },
-  picker: {
-    backgroundColor: '#fff',
-    marginBottom: 15,
-    borderRadius: 8,
-  },
-  button: {
-    backgroundColor: '#27ae60',
-    padding: 14,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-});

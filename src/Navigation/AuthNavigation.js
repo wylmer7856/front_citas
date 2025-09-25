@@ -1,39 +1,18 @@
-// src/Navigation/AuthNavigation.js
-import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+// src/navigation/AuthNavigation.js
+import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import LoginScreen from "../screens/auth/LoginScreen";
+import RegisterScreen from "../screens/auth/RegisterScreen";
+import InicioScreen from "../screens/auth/InicioScreen";
 
-import InicioScreen from '../screens/Inicio/InicioScreen';
-import LoginScreen from '../screens/Auth/LoginScreen';
-import RegisterScreen from '../screens/Auth/RegisterScreen';
+const Stack = createNativeStackNavigator();
 
-const Stack = createStackNavigator();
-
-export default function AuthNavigation({ onLogin }) {
+export default function AuthNavigation() {
   return (
-    <Stack.Navigator 
-      initialRouteName="Inicio"
-      screenOptions={{
-        headerStyle: { backgroundColor: '#673AB7' },
-        headerTintColor: '#fff',
-        headerTitleStyle: { fontWeight: 'bold' }
-      }}
-    >
-      <Stack.Screen 
-        name="Inicio" 
-        component={InicioScreen}
-        options={{ title: 'Bienvenido', headerShown: false }}
-      />
-      <Stack.Screen 
-        name="Login"
-        options={{ title: 'Iniciar Sesión' }}
-      >
-        {props => <LoginScreen {...props} onLogin={onLogin} />}
-      </Stack.Screen>
-      <Stack.Screen 
-        name="Register" 
-        component={RegisterScreen}
-        options={{ title: 'Crear Cuenta' }}
-      />
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Inicio" component={InicioScreen} />
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Register" component={RegisterScreen} />
     </Stack.Navigator>
   );
 }
