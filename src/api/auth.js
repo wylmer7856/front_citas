@@ -1,14 +1,7 @@
-// src/api/auth.js
-import ApiService from "../services/ApiService";
+import api from './apiConfig';
 
-// Login de usuario
-export const login = (email, password) =>
-  ApiService.post("/login", { email, password });
-
-// Registro de usuario
-export const register = (payload) =>
-  ApiService.post("/register", payload);
-// payload = { nombre, apellido, email, telefono, password, rol }
-
-// Logout
-export const logout = () => ApiService.post("/logout");
+export const register = data => api.post('/register', data);
+export const login = data => api.post('/login', data);
+export const logout = () => api.post('/logout');
+export const getProfile = () => api.get('/me');
+export const updateProfile = data => api.put('/me', data);

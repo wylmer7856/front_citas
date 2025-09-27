@@ -1,14 +1,19 @@
-// src/styles/fonts.js
 export default {
-  regular: "System",
-  medium: "System",
-  bold: "System",
-  sizes: {
-    small: 12,
-    regular: 14,
-    medium: 16,
-    large: 20,
-    xlarge: 24,
-    title: 28,
+  family: {
+    regular: 'System',
+    bold: 'System',
+    italic: 'System',
+  },
+  size: {
+    xs: 12,
+    sm: 14,
+    md: 16,
+    lg: 20,
+    xl: 24,
+    title: 32,
+  },
+  weight: {
+    regular: '400',
+    bold: '700',
   },
 };

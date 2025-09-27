@@ -1,11 +1,6 @@
-// src/api/especialidades.js
-import ApiService from "../services/ApiService";
+import api from './apiConfig';
 
-// ADMIN
-export const listarEspecialidades = () => ApiService.get("/listarespecialidades");
-export const crearEspecialidad = (payload) => ApiService.post("/crearespecialidades", payload);
-export const editarEspecialidad = (id, payload) => ApiService.put(`/editarespecialidades/${id}`, payload);
-export const eliminarEspecialidad = (id) => ApiService.delete(`/eliminarespecialidades/${id}`);
-
-// ADMIN + MEDICO
-export const detalleEspecialidad = (id) => ApiService.get(`/buscareespecialidades/${id}`);
+export const getEspecialidades = () => api.get('/especialidades');
+export const createEspecialidad = data => api.post('/especialidades', data);
+export const updateEspecialidad = (id, data) => api.put(`/especialidades/${id}`, data);
+export const deleteEspecialidad = id => api.delete(`/especialidades/${id}`);

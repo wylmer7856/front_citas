@@ -1,9 +1,6 @@
-// src/api/citas.js
-import ApiService from "../services/ApiService";
+import api from './apiConfig';
 
-// MEDICO + PACIENTE
-export const listarCitas = () => ApiService.get("/listarcitas");
-export const crearCita = (payload) => ApiService.post("/crearcitas", payload);
-export const detalleCita = (id) => ApiService.get(`/buscarcitas/${id}`);
-export const editarCita = (id, payload) => ApiService.put(`/editarcitas/${id}`, payload);
-export const eliminarCita = (id) => ApiService.delete(`/eliminarcitas/${id}`);
+export const getCitas = () => api.get('/citas');
+export const createCita = data => api.post('/citas', data);
+export const updateCita = (id, data) => api.put(`/citas/${id}`, data);
+export const deleteCita = id => api.delete(`/citas/${id}`);
