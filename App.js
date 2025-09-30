@@ -1,22 +1,24 @@
 import React from 'react';
-import { StatusBar } from 'react-native';
-import AppNavigator from './src/navigation/AppNavigator';
+import { NavigationContainer } from '@react-navigation/native';
+import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import RootNavigator from './src/navigation/RootNavigator';
 import { AuthProvider } from './src/context/AuthContext';
-import { UserProvider } from './src/context/UserProvider';
 import { ThemeProvider } from './src/context/ThemeContext';
 
-
-const App = () => {
-  return (
-    <ThemeProvider>
-      <AuthProvider>
-        <UserProvider>
-          <StatusBar barStyle="light-content" backgroundColor="#007bff" />
-          <AppNavigator />
-        </UserProvider>
-      </AuthProvider>
-    </ThemeProvider>
-  );
-};
+const App = () => (
+  <GestureHandlerRootView style={{ flex: 1 }}>
+    <SafeAreaProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <NavigationContainer>
+            <RootNavigator />
+          </NavigationContainer>
+        </AuthProvider>
+      </ThemeProvider>
+    </SafeAreaProvider>
+  </GestureHandlerRootView>
+);
 
 export default App;

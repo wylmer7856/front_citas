@@ -1,38 +1,54 @@
 import React, { createContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { login, logout, getProfile } from '../api/auth';
+import { getMe, logout as apiLogout } from '../../service/auth';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const signIn = async (credentials) => {
-    const response = await login(credentials);
-    const accessToken = response.data.token;
-    await AsyncStorage.setItem('token', accessToken);
-    setToken(accessToken);
+  useEffect(() => {
+    const loadSession = async () => {
+      const storedToken = await AsyncStorage.getItem('userToken');
+      if (storedToken) {
+        try {
+          const data = await getMe();
+          setUser(data);
+          setToken(storedToken);
+        } catch (error) {
+          await AsyncStorage.removeItem('userToken');
+          await AsyncStorage.removeItem('userData');
+        }
+      }
+      setLoading(false);
+    };
+
+    loadSession();
+  }, []);
+
+  const login = async (data) => {
+    await AsyncStorage.setItem('userToken', data.token);
+    await AsyncStorage.setItem('userData', JSON.stringify(data.user));
+    setUser(data.user);
+    setToken(data.token);
   };
 
-  const signOut = async () => {
-    await logout();
-    await AsyncStorage.removeItem('token');
+  const logout = async () => {
+    try {
+      await apiLogout();
+    } catch (e) {
+      console.log('Error al cerrar sesión:', e.message);
+    }
+    await AsyncStorage.removeItem('userToken');
+    await AsyncStorage.removeItem('userData');
+    setUser(null);
     setToken(null);
   };
 
-  const loadToken = async () => {
-    const storedToken = await AsyncStorage.getItem('token');
-    setToken(storedToken);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    loadToken();
-  }, []);
-
   return (
-    <AuthContext.Provider value={{ token, signIn, signOut, loading }}>
+    <AuthContext.Provider value={{ user, token, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

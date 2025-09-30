@@ -1,25 +1,26 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const HorarioCard = ({ horario }) => (
+const PacienteCard = ({ paciente }) => (
   <View style={styles.card}>
-    <Text style={styles.title}>🕒 {horario.dia} - {horario.hora_inicio} a {horario.hora_fin}</Text>
-    <Text>Disponible: {horario.disponible ? 'Sí' : 'No'}</Text>
+    <Text style={styles.name}>{paciente.user?.name}</Text>
+    <Text>{paciente.user?.email}</Text>
+    <Text>Documento: {paciente.documento}</Text>
   </View>
 );
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#f3e5f5',
+    backgroundColor: '#fff3e0',
     padding: 12,
     marginVertical: 6,
     borderRadius: 10,
   },
-  title: {
+  name: {
     fontWeight: 'bold',
     fontSize: 16,
     marginBottom: 4,
   },
 });
 
-export default HorarioCard;
+export default PacienteCard;
